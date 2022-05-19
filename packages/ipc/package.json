@@ -1,0 +1,44 @@
+{
+  "name": "@livemoe/ipc",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "author": "Seven",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "module": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./main": {
+      "require": "./dist/main.cjs",
+      "module": "./dist/main.mjs",
+      "types": "./dist/main.d.ts"
+    },
+    "./renderer": {
+      "require": "./dist/renderer.cjs",
+      "module": "./dist/renderer.mjs",
+      "types": "./dist/renderer.d.ts"
+    },
+    "./*": "./*"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub"
+  },
+  "dependencies": {
+    "@livemoe/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "^18.2.4"
+  },
+  "peerDependencies": {
+    "electron": "^18.2.4"
+  }
+}

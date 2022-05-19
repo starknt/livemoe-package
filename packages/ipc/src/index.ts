@@ -1,0 +1,1 @@
+export { IPCService } from './electron-common/ipc.service'

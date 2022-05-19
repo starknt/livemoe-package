@@ -1,0 +1,24 @@
+{
+  "name": "@livemoe/utils",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Seven",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "module": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub"
+  }
+}
