@@ -1,8 +1,12 @@
 import type { IDisposable } from '@livemoe/utils'
 import { BufferWriter, Event, VSBuffer, serialize } from '@livemoe/utils'
+import { ipcRenderer } from 'electron'
 import type { IChannel, IChannelClient, IChannelServer, IMessagePassingProtocol, IServerChannel } from '../electron-common/ipc'
 import { ChannelClient, ChannelServer } from '../electron-common/ipc'
 import { Protocol } from '../electron-common/ipc.electron'
+
+// @ts-expect-error ok
+window.ipcRenderer = ipcRenderer
 
 interface ICommonProtocol {
   send(event: string | symbol, ...args: unknown[]): void
@@ -49,6 +53,14 @@ export class Client extends IPCClient implements IDisposable {
     if (typeof window.require === 'function' && window.require('electron').ipcRenderer) {
       // node
       ipcRenderer = window.require('electron').ipcRenderer
+      onMessage = Event.fromNodeEventEmitter<VSBuffer>(ipcRenderer, 'ipc:message', (_, message: Buffer) => VSBuffer.wrap(message))
+      ipcRenderer.send('ipc:hello')
+    }
+    // @ts-expect-error ok
+    else if (window.ipcRenderer) {
+      // electron
+      // @ts-expect-error ok
+      ipcRenderer = window.ipcRenderer
       onMessage = Event.fromNodeEventEmitter<VSBuffer>(ipcRenderer, 'ipc:message', (_, message: Buffer) => VSBuffer.wrap(message))
       ipcRenderer.send('ipc:hello')
     }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "esnext",
+    "target": "es2015",
+    "module": "es2015",
     "lib": [
       "esnext",
       "DOM"
@@ -17,6 +17,12 @@
     "paths": {
       "@livemoe/ipc": [
         "./packages/ipc/src/index.ts"
+      ],
+      "@livemoe/ipc/main": [
+        "./packages/ipc/src/main.ts"
+      ],
+      "@livemoe/ipc/renderer": [
+        "./packages/ipc/src/renderer.ts"
       ],
       "@livemoe/tools": [
         "./packages/tools/src/index.ts"
