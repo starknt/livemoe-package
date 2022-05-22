@@ -8,7 +8,7 @@ import { Protocol } from '../electron-common/ipc.electron'
 // @ts-expect-error ok
 window.ipcRenderer = ipcRenderer
 
-interface ICommonProtocol {
+export interface ICommonProtocol {
   send(event: string | symbol, ...args: unknown[]): void
   on(event: string | symbol, callback: Function): void
   removeListener(event: string | symbol, listener: (...args: unknown[]) => void): void

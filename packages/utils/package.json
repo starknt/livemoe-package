@@ -1,9 +1,12 @@
 {
   "name": "@livemoe/utils",
-  "version": "0.0.6",
+  "version": "0.0.1",
   "description": "",
   "license": "MIT",
   "author": "Seven",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",

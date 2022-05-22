@@ -1,14 +1,18 @@
 {
   "name": "@livemoe/tool",
-  "version": "0.0.6",
+  "version": "0.0.1",
   "description": "",
   "license": "MIT",
   "author": "Seven",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
     "directory": "packages/tools"
   },
+  "keywords": ["tool", "native", "electron", "livemoe"],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
