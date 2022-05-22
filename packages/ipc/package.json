@@ -1,9 +1,14 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "license": "MIT",
   "author": "Seven",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
+    "directory": "packages/ipc"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -22,8 +27,7 @@
       "require": "./dist/renderer.cjs",
       "module": "./dist/renderer.mjs",
       "types": "./dist/renderer.d.ts"
-    },
-    "./*": "./*"
+    }
   },
   "files": [
     "dist"
@@ -34,9 +38,6 @@
   },
   "dependencies": {
     "@livemoe/utils": "workspace:*"
-  },
-  "devDependencies": {
-    "electron": "^18.2.4"
   },
   "peerDependencies": {
     "electron": "^18.2.4"

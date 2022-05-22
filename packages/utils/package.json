@@ -1,9 +1,14 @@
 {
   "name": "@livemoe/utils",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "",
   "license": "MIT",
   "author": "Seven",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
+    "directory": "packages/utils"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
