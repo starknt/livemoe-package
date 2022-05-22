@@ -69,22 +69,20 @@ export interface Tools {
 
 const Addon: Tools = Bindings('tools')
 
-export default {
-  GetSysListViewPosition: Addon.GetSysListViewPosition,
-  GetSysTaskbarState: Addon.GetSysTaskbarState,
-  GetSysListViewIconRect: Addon.GetSysListViewIconRect,
-  SetWindowInWorkerW: Addon.SetWindowInWorkerW,
-  RestoreWorkerW: Addon.RestoreWorkerW,
-  CheckAeroEnable: Addon.CheckAeroEnable,
-  EnableAero: Addon.EnableAero,
-  SetTaskbar: Addon.SetTaskbar,
-  RestoreTaskbar: Addon.RestoreTaskbar,
-  SetSystemCursorToNode: Addon.SetSystemCursorToNode,
-  RestoreSystemCursor: Addon.RestoreSystemCursor,
-  ShowDesktopIcon: Addon.ShowDesktopIcon,
-  HideDesktopIcon: Addon.HideDesktopIcon,
-  ShowShellWindow: Addon.ShowShellWindow,
-  HideShellWindow: Addon.HideShellWindow,
-  QueryUserState: Addon.QueryUserState,
-  IsInDesktop: Addon.IsInDesktop,
-}
+export const GetSysListViewPosition = Addon.GetSysListViewPosition
+export const GetSysTaskbarState = Addon.GetSysTaskbarState
+export const GetSysListViewIconRect = Addon.GetSysListViewIconRect
+export const SetWindowInWorkerW = Addon.SetWindowInWorkerW
+export const RestoreWorkerW = Addon.RestoreWorkerW
+export const CheckAeroEnable = Addon.CheckAeroEnable
+export const EnableAero = Addon.EnableAero
+export const SetTaskbar = Addon.SetTaskbar
+export const RestoreTaskbar = Addon.RestoreTaskbar
+export const SetSystemCursorToNode = Addon.SetSystemCursorToNode
+export const RestoreSystemCursor = Addon.RestoreSystemCursor
+export const ShowDesktopIcon = Addon.ShowDesktopIcon
+export const HideDesktopIcon = Addon.HideDesktopIcon
+export const ShowShellWindow = Addon.ShowShellWindow
+export const HideShellWindow = Addon.HideShellWindow
+export const QueryUserState = Addon.QueryUserState
+export const IsInDesktop = Addon.IsInDesktop

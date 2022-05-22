@@ -1,7 +1,6 @@
 <br>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/unocss/unocss/main/playground/public/icon-gray.svg" style="width:100px;" />
 </p>
 
 <h1 align="center">LiveMoe Packages</h1>

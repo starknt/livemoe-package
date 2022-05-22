@@ -12,6 +12,7 @@
     "build": "rimraf packages/*/dist packages/*/build && pnpm -r build",
     "stub": "pnpm -r --parallel run stub",
     "release": "bumpp package.json packages/*/package.json --commit --push --tag",
+    "publish": "pnpm -r publish",
     "test": "vitest"
   },
   "devDependencies": {

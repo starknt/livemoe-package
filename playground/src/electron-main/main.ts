@@ -2,12 +2,15 @@ import path from 'path'
 import { IPCService } from '@livemoe/ipc'
 import { Server } from '@livemoe/ipc/main'
 import { BrowserWindow, app } from 'electron'
+import { GetSysListViewPosition } from '@livemoe/tool'
+
+console.log(GetSysListViewPosition())
 
 const server = new Server()
 const service = new IPCService()
 server.registerChannel('test', service)
-service.registerCaller('test', async () => {
-  return 'test'
+service.registerCaller('test', async (msg) => {
+  return msg
 })
 let window: BrowserWindow
 

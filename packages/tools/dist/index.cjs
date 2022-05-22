@@ -17,25 +17,39 @@ var ACCENT = /* @__PURE__ */ ((ACCENT2) => {
   return ACCENT2;
 })(ACCENT || {});
 const Addon = Bindings__default("tools");
-const index = {
-  GetSysListViewPosition: Addon.GetSysListViewPosition,
-  GetSysTaskbarState: Addon.GetSysTaskbarState,
-  GetSysListViewIconRect: Addon.GetSysListViewIconRect,
-  SetWindowInWorkerW: Addon.SetWindowInWorkerW,
-  RestoreWorkerW: Addon.RestoreWorkerW,
-  CheckAeroEnable: Addon.CheckAeroEnable,
-  EnableAero: Addon.EnableAero,
-  SetTaskbar: Addon.SetTaskbar,
-  RestoreTaskbar: Addon.RestoreTaskbar,
-  SetSystemCursorToNode: Addon.SetSystemCursorToNode,
-  RestoreSystemCursor: Addon.RestoreSystemCursor,
-  ShowDesktopIcon: Addon.ShowDesktopIcon,
-  HideDesktopIcon: Addon.HideDesktopIcon,
-  ShowShellWindow: Addon.ShowShellWindow,
-  HideShellWindow: Addon.HideShellWindow,
-  QueryUserState: Addon.QueryUserState,
-  IsInDesktop: Addon.IsInDesktop
-};
+const GetSysListViewPosition = Addon.GetSysListViewPosition;
+const GetSysTaskbarState = Addon.GetSysTaskbarState;
+const GetSysListViewIconRect = Addon.GetSysListViewIconRect;
+const SetWindowInWorkerW = Addon.SetWindowInWorkerW;
+const RestoreWorkerW = Addon.RestoreWorkerW;
+const CheckAeroEnable = Addon.CheckAeroEnable;
+const EnableAero = Addon.EnableAero;
+const SetTaskbar = Addon.SetTaskbar;
+const RestoreTaskbar = Addon.RestoreTaskbar;
+const SetSystemCursorToNode = Addon.SetSystemCursorToNode;
+const RestoreSystemCursor = Addon.RestoreSystemCursor;
+const ShowDesktopIcon = Addon.ShowDesktopIcon;
+const HideDesktopIcon = Addon.HideDesktopIcon;
+const ShowShellWindow = Addon.ShowShellWindow;
+const HideShellWindow = Addon.HideShellWindow;
+const QueryUserState = Addon.QueryUserState;
+const IsInDesktop = Addon.IsInDesktop;
 
 exports.ACCENT = ACCENT;
-exports["default"] = index;
+exports.CheckAeroEnable = CheckAeroEnable;
+exports.EnableAero = EnableAero;
+exports.GetSysListViewIconRect = GetSysListViewIconRect;
+exports.GetSysListViewPosition = GetSysListViewPosition;
+exports.GetSysTaskbarState = GetSysTaskbarState;
+exports.HideDesktopIcon = HideDesktopIcon;
+exports.HideShellWindow = HideShellWindow;
+exports.IsInDesktop = IsInDesktop;
+exports.QueryUserState = QueryUserState;
+exports.RestoreSystemCursor = RestoreSystemCursor;
+exports.RestoreTaskbar = RestoreTaskbar;
+exports.RestoreWorkerW = RestoreWorkerW;
+exports.SetSystemCursorToNode = SetSystemCursorToNode;
+exports.SetTaskbar = SetTaskbar;
+exports.SetWindowInWorkerW = SetWindowInWorkerW;
+exports.ShowDesktopIcon = ShowDesktopIcon;
+exports.ShowShellWindow = ShowShellWindow;
