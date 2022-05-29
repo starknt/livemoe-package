@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -12,22 +12,27 @@
     "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
     "directory": "packages/ipc"
   },
-  "keywords": ["electron", "ipc", "event", "livemoe"],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "keywords": [
+    "electron",
+    "ipc",
+    "event",
+    "livemoe"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
       "module": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./main": {
+    "./MP": {
       "require": "./dist/main.cjs",
       "module": "./dist/main.mjs",
       "types": "./dist/main.d.ts"
     },
-    "./renderer": {
+    "./RP": {
       "require": "./dist/renderer.cjs",
       "module": "./dist/renderer.mjs",
       "types": "./dist/renderer.d.ts"

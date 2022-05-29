@@ -1,4 +1,4 @@
-import { Client } from '@livemoe/ipc/renderer'
+import { Client } from '@livemoe/ipc/RP'
 import { contextBridge } from 'electron'
 const client = new Client('')
 

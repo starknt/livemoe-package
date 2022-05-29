@@ -1,14 +1,5 @@
-import * as errors from './errors'
 import { Emitter, Event } from './event'
 import type { IDisposable } from './lifecycle'
-
-export function isThenable<T>(obj: any): obj is Promise<T> {
-  return obj && typeof (obj as Promise<any>).then === 'function'
-}
-
-export interface CancelablePromise<T> extends Promise<T> {
-  cancel(): void
-}
 
 export interface CancellationToken {
   // 被要求取消
@@ -97,63 +88,6 @@ export namespace CancellationToken {
   })
 }
 
-function createCancelablePromise<T>(
-  callback: (token: CancellationToken) => Promise<T>,
-): CancelablePromise<T> {
-  // 生成一个取消令牌
-  const source = new CancellationTokenSource()
-
-  // 将令牌给到 callback 中， 这样即可控制在 callback 任何生命周期进行终止
-  // callback 中也可以主动发起终止。
-  const thenable = callback(source.token)
-  const promise = new Promise<T>((resolve, reject) => {
-    // 被终止了，则会结束此 promise
-    source.token.onCancellationRequested(() => {
-      reject(errors.canceled())
-    })
-
-    // 正常执行，则返回执行结果。
-    Promise.resolve(thenable).then(
-      (value) => {
-        source.dispose()
-        resolve(value)
-      },
-      (err) => {
-        source.dispose()
-        reject(err)
-      },
-    )
-  })
-
-  // 最终返回 Promise 对象
-  return new (class implements CancelablePromise<T> {
-    [Symbol.toStringTag]: string
-    cancel() {
-      source.cancel()
-    }
-
-    then<TResult1 = T, TResult2 = never>(
-      resolve?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null,
-      reject?:
-      | ((reason: any) => TResult2 | Promise<TResult2>)
-      | undefined
-      | null,
-    ): Promise<TResult1 | TResult2> {
-      return promise.then(resolve, reject)
-    }
-
-    catch<TResult = never>(
-      reject?: ((reason: any) => TResult | Promise<TResult>) | undefined | null,
-    ): Promise<T | TResult> {
-      return this.then(undefined, reject)
-    }
-
-    finally(onfinally?: (() => void) | undefined | null): Promise<T> {
-      return promise.finally(onfinally)
-    }
-  })()
-}
-
 export class CancellationTokenSource {
   private _token?: CancellationToken = undefined
 
@@ -201,6 +135,3 @@ export class CancellationTokenSource {
   }
 }
 
-export {
-  createCancelablePromise,
-}

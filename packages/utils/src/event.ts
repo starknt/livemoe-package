@@ -494,7 +494,7 @@ export interface EmitterOptions {
   leakWarningThreshold?: number
 }
 
-type Listener<T> = [(e: T) => void, any] | ((e: T) => void)
+export type Listener<T> = [(e: T) => void, any] | ((e: T) => void)
 
 export class Emitter<T> {
   private static readonly _noop = function () {} // 空操作

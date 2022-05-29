@@ -5,11 +5,6 @@ export interface IDisposable {
   dispose(): void
 }
 
-export interface IdleDeadline {
-  readonly didTimeout: boolean
-  timeRemaining(): DOMHighResTimeStamp
-}
-
 export class DisposableStore implements IDisposable {
   // 存储需要 dispose 的对象
   private readonly _toDispose: Set<IDisposable> = new Set<IDisposable>()

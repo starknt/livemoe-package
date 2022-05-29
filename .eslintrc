@@ -9,7 +9,8 @@
         "react/display-name": "off",
         "no-console": "off",
         "import/export": "off",
-        "eol-last": "off"
+        "eol-last": "off",
+        "@typescript-eslint/no-redeclare": "off"
     },
     "overrides": [
         {

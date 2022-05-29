@@ -1,5 +1,6 @@
-import type { CancelablePromise, CancellationToken } from './cancelablePromise'
-import { createCancelablePromise } from './cancelablePromise'
+import type { CancellationToken } from './cancelablePromise'
+import type { CancelablePromise } from './async'
+import { createCancelablePromise } from './async'
 import * as errors from './errors'
 
 export function timeout(millis: number): CancelablePromise<void>

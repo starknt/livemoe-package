@@ -10,6 +10,7 @@
   "dependencies": {
     "@livemoe/ipc": "workspace:*",
     "@livemoe/utils": "workspace:*",
-    "@livemoe/tool": "workspace:*"
+    "@livemoe/tool": "workspace:*",
+    "@livemoe/core": "workspace:*"
   }
 }

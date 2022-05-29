@@ -1,6 +1,6 @@
 {
-  "name": "@livemoe/tool",
-  "version": "0.0.2",
+  "name": "@livemoe/core",
+  "version": "0.0.1",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -10,19 +10,20 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
-    "directory": "packages/tools"
+    "directory": "packages/core"
   },
   "keywords": [
-    "tool",
-    "native",
     "electron",
+    "ipc",
+    "event",
     "livemoe"
   ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "electron": "././dist/index.cjs",
       "require": "./dist/index.cjs",
       "module": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
@@ -32,15 +33,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "node-gyp configure && node-gyp build && unbuild",
+    "build": "unbuild",
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "bindings": "^1.5.0",
-    "node-addon-api": "^5.0.0"
-  },
-  "devDependencies": {
-    "@types/bindings": "^1.5.1",
-    "node-gyp": "^9.0.0"
+    "@livemoe/utils": "workspace:*"
   }
 }

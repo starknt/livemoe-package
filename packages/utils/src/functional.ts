@@ -215,39 +215,3 @@ export function delay(msec: number): Promise<void> {
     }, msec)
   })
 }
-
-export function retry<T>(
-  func: () => Promise<T>,
-  maxRetry = 3,
-  delay = 1000,
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    let retryCount = 0
-    const retry = () => {
-      func()
-        .then((result) => {
-          resolve(result)
-        })
-        .catch((err) => {
-          retryCount++
-          if (retryCount >= maxRetry)
-            reject(err)
-
-          else
-            setTimeout(retry, delay)
-        })
-    }
-    retry()
-  })
-}
-
-export function timeout<T>(promise: () => Promise<T>, ms = 1000): Promise<T> {
-  return new Promise((resolve, reject) => {
-    promise().then(resolve).catch(reject)
-
-    const timer = setTimeout(() => {
-      clearTimeout(timer)
-      reject(new Error('promise timeout'))
-    }, ms)
-  })
-}

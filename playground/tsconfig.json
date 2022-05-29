@@ -1,11 +1,14 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "ES2015",
+    "target": "ES6",
+    "module": "ESNext",
     "lib": [
       "esnext",
       "dom"
-    ]
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "exclude": [
     "**/dist/**"

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "es2015",
+    "target": "ES6",
+    "module": "ES6",
     "lib": [
       "esnext",
       "DOM"
@@ -13,18 +13,22 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "jsx": "preserve",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "paths": {
+      "@livemoe/core": [
+        "./packages/core/src/index.ts"
+      ],
       "@livemoe/ipc": [
         "./packages/ipc/src/index.ts"
       ],
-      "@livemoe/ipc/main": [
+      "@livemoe/ipc/MP": [
         "./packages/ipc/src/main.ts"
       ],
-      "@livemoe/ipc/renderer": [
+      "@livemoe/ipc/RP": [
         "./packages/ipc/src/renderer.ts"
       ],
-      "@livemoe/tools": [
+      "@livemoe/tool": [
         "./packages/tools/src/index.ts"
       ],
       "@livemoe/utils": [

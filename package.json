@@ -1,7 +1,7 @@
 {
   "name": "@livemoe/monorepo",
   "packageManager": "pnpm@7.1.0",
-  "version": "0.0.7",
+  "version": "0.0.1",
   "private": true,
   "description": "",
   "keywords": [],
@@ -9,16 +9,18 @@
   "author": "Seven",
   "scripts": {
     "dev": "npm -C playground run dev",
-    "build": "rimraf packages/*/dist packages/*/build && pnpm -r build",
+    "build": "rimraf packages/*/dist packages/*/build && pnpm -r --parallel build",
     "stub": "pnpm -r --parallel run stub",
     "release": "bumpp package.json packages/*/package.json --commit --push --tag",
     "publish": "pnpm -r publish",
-    "test": "vitest"
+    "test": "vitest -u",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.23.1",
     "@types/node": "^17.0.34",
     "bumpp": "^7.1.1",
+    "c8": "^7.11.3",
     "cross-env": "^7.0.3",
     "electron": "^18.2.4",
     "eslint": "^8.15.0",
