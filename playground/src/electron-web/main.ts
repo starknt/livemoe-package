@@ -4,7 +4,7 @@ const msgDom: HTMLInputElement | null = document.querySelector('#msg')
 
 const messages: any[] = []
 
-sendBtn?.addEventListener('click', () => {
+function sendMessage() {
   messages.push({
     type: 'send',
     msg: msgDom?.value,
@@ -18,7 +18,14 @@ sendBtn?.addEventListener('click', () => {
       })
     })
     .catch((err: Error) => console.error(err))
+}
+
+msgDom?.addEventListener('keyup', (e) => {
+  if (e.key.toLowerCase() === 'enter')
+    sendMessage()
 })
+
+sendBtn?.addEventListener('click', sendMessage)
 
 setInterval(() => {
   let text = ''

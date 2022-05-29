@@ -134,8 +134,6 @@ function storeServiceDependency(id: Function, target: Function, index: number, o
     (target as any)[_util.DI_DEPENDENCIES] = [{ id, index, optional }];
     (target as any)[_util.DI_TARGET] = target
   }
-
-  console.log(target)
 }
 
 /**
@@ -156,10 +154,6 @@ export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
 
   _util.serviceIds.set(serviceId, id)
   return id
-}
-
-export function Service(serviceId: string) {
-  return createDecorator(serviceId)
 }
 
 /**
