@@ -7,9 +7,10 @@ import { ServiceCollection } from './serviceCollection'
 
 const serviceCollection = new ServiceCollection()
 
-export const Service = <T>(id: ServiceIdentifier<T>) => {
+export const Injectable = <T>(id: ServiceIdentifier<T>) => {
   return function (constructor: new (...args: any[]) => any) {
-    serviceCollection.set(id, new SyncDescriptor<T>(constructor))
+    if (!serviceCollection.has(id))
+      serviceCollection.set(id, new SyncDescriptor<T>(constructor))
   }
 }
 

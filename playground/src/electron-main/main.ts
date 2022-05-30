@@ -4,7 +4,7 @@ import { IPCService } from '@livemoe/ipc'
 import { Server } from '@livemoe/ipc/MP'
 import { BrowserWindow, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
-import { InstantiationService, Module, Service, ServiceCollection, SyncDescriptor, createDecorator, optional } from '@livemoe/core'
+import { Injectable, Module, createDecorator, optional } from '@livemoe/core'
 
 export interface ITestService {
   hello: string
@@ -86,7 +86,7 @@ class Test7 {
   }
 }
 
-@Service(ITestService)
+@Injectable(ITestService)
 class TestService implements ITestService {
   hello = 'hello'
 }
