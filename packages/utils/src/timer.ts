@@ -3,7 +3,7 @@ import type { IDisposable } from './lifecycle'
 export class PauseTimeout implements IDisposable {
   private timer: NodeJS.Timeout | undefined = undefined
 
-  private _time = this.time
+  private _time = 0
 
   private startTime = 0
 
@@ -12,6 +12,7 @@ export class PauseTimeout implements IDisposable {
     private listener: () => void,
     private readonly thisArg?: unknown,
   ) {
+    this._time = time
     // noop
   }
 
