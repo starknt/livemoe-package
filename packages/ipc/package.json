@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -18,29 +18,30 @@
     "event",
     "livemoe"
   ],
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "*.d.ts"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
-      "module": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
     "./MP": {
       "require": "./dist/main.cjs",
-      "module": "./dist/main.mjs",
+      "import": "./dist/main.mjs",
       "types": "./dist/main.d.ts"
     },
     "./RP": {
       "require": "./dist/renderer.cjs",
-      "module": "./dist/renderer.mjs",
+      "import": "./dist/renderer.mjs",
       "types": "./dist/renderer.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub"
