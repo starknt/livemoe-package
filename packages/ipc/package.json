@@ -31,12 +31,12 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./MP": {
+    "./main": {
       "require": "./dist/main.cjs",
       "import": "./dist/main.mjs",
       "types": "./dist/main.d.ts"
     },
-    "./RP": {
+    "./renderer": {
       "require": "./dist/renderer.cjs",
       "import": "./dist/renderer.mjs",
       "types": "./dist/renderer.d.ts"

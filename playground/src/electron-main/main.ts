@@ -1,7 +1,7 @@
 import path from 'path'
 import assert from 'assert'
 import { IPCService } from '@livemoe/ipc'
-import { Server } from '@livemoe/ipc/MP'
+import { Server } from '@livemoe/ipc/main'
 import { BrowserWindow, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
 import { Injectable, Module, createDecorator, optional } from '@livemoe/core'

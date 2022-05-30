@@ -22,12 +22,6 @@
       "@livemoe/ipc": [
         "./packages/ipc/src/index.ts"
       ],
-      "@livemoe/ipc/MP": [
-        "./packages/ipc/src/main.ts"
-      ],
-      "@livemoe/ipc/RP": [
-        "./packages/ipc/src/renderer.ts"
-      ],
       "@livemoe/tool": [
         "./packages/tools/src/index.ts"
       ],
