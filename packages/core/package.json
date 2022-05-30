@@ -14,8 +14,6 @@
   },
   "keywords": [
     "electron",
-    "ipc",
-    "event",
     "livemoe"
   ],
   "main": "dist/index.cjs",
