@@ -3,11 +3,6 @@
 /* eslint-disable import/no-mutable-exports */
 /* eslint-disable promise/param-names */
 /* eslint-disable no-tabs */
-/* ---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *-------------------------------------------------------------------------------------------- */
-
 import type { CancellationToken } from './cancelablePromise'
 import { CancellationTokenSource } from './cancelablePromise'
 import { canceled, onUnexpectedError } from './errors'
