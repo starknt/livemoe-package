@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -43,6 +43,7 @@
     }
   },
   "scripts": {
+    "prepublish": "pnpm run build",
     "build": "unbuild",
     "stub": "unbuild --stub"
   },
