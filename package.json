@@ -1,18 +1,19 @@
 {
   "name": "@livemoe/monorepo",
   "packageManager": "pnpm@7.1.0",
-  "version": "0.0.4-beta.1",
+  "version": "0.0.4",
   "private": true,
   "description": "",
   "keywords": [],
   "license": "MIT",
   "author": "Seven",
   "scripts": {
-    "dev": "npm -C playground run dev",
+    "play": "npm -C playground run dev",
     "build": "rimraf packages/*/dist packages/*/build && pnpm -r --parallel build",
     "stub": "pnpm -r --parallel run stub",
     "release": "bumpp package.json packages/*/package.json --commit --push --tag",
     "publish": "pnpm -r publish",
+    "typecheck": "npx tsc --noEmit",
     "test": "vitest -u",
     "coverage": "vitest run --coverage"
   },

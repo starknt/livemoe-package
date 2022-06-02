@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.7",
+  "version": "0.0.4",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -47,6 +47,7 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
+    "@livemoe/core": "workspace:*",
     "@livemoe/utils": "workspace:*"
   },
   "peerDependencies": {
