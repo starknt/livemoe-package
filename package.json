@@ -1,7 +1,7 @@
 {
   "name": "@livemoe/monorepo",
   "packageManager": "pnpm@7.1.0",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "private": true,
   "description": "",
   "keywords": [],
