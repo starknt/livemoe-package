@@ -10,7 +10,8 @@
         "no-console": "off",
         "import/export": "off",
         "eol-last": "off",
-        "@typescript-eslint/no-redeclare": "off"
+        "@typescript-eslint/no-redeclare": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
     },
     "overrides": [
         {

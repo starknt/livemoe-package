@@ -46,8 +46,10 @@ importers:
 
   packages/ipc:
     specifiers:
+      '@livemoe/core': workspace:*
       '@livemoe/utils': workspace:*
     dependencies:
+      '@livemoe/core': link:../core
       '@livemoe/utils': link:../utils
 
   packages/tools:

@@ -1,6 +1,6 @@
-import { Client } from '@livemoe/ipc/renderer'
+import { IPCRenderServer } from '@livemoe/ipc/renderer'
 import { contextBridge } from 'electron'
-const client = new Client('')
+const client = new IPCRenderServer('')
 
 const testChannel = client.getChannel('test')
 

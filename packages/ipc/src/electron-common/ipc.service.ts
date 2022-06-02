@@ -20,7 +20,7 @@ export interface IEventListener<T> {
   (args: any): Event<T>
 }
 
-export interface IService {
+export interface IService extends IServerChannel {
   registerCaller<T>(command: string, listener: IListener<T>): boolean
   registerCaller<T>(
     command: string,
@@ -52,7 +52,7 @@ export interface IService {
   removeListener(event: string, ctx: string): boolean
 }
 
-export class IPCService implements IService, IServerChannel {
+export class IPCService implements IService {
   private readonly eventIdentifier = 'lm:event'
 
   private readonly callerIdentifier = 'lm:caller'

@@ -14,7 +14,7 @@ export interface ICommonProtocol {
   removeListener(event: string | symbol, listener: (...args: unknown[]) => void): void
 }
 
-export class IPCClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
+export class IPCServer<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
   private readonly channelClient: ChannelClient
 
   private readonly channelServer: ChannelServer<TContext>
@@ -42,7 +42,7 @@ export class IPCClient<TContext = string> implements IChannelClient, IChannelSer
   }
 }
 
-export class Client extends IPCClient implements IDisposable {
+export class IPCRenderServer extends IPCServer implements IDisposable {
   static commonProtocol?: ICommonProtocol
 
   private readonly protocol: Protocol
@@ -91,7 +91,7 @@ export class Client extends IPCClient implements IDisposable {
    * @param commonProtocol 用于扩展服务器的通信方式
    */
   constructor(ctx: string, commonProtocol?: ICommonProtocol) {
-    const protocol = Client.createProtocol(commonProtocol)
+    const protocol = IPCRenderServer.createProtocol(commonProtocol)
     super(protocol, ctx)
     this.protocol = protocol
   }

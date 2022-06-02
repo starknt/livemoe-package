@@ -136,7 +136,7 @@ implements IChannelServer<TContext>, IDisposable {
   }
 }
 
-export class Server extends IPCServer {
+export class IPCMainServer extends IPCServer {
   private static readonly Clients: Map<number, IDisposable> = new Map<
     number,
     IDisposable
@@ -151,13 +151,13 @@ export class Server extends IPCServer {
 
     return Event.map(onHello, (webContents) => {
       const { id } = webContents
-      const client = Server.Clients.get(id)
+      const client = IPCMainServer.Clients.get(id)
 
       if (client)
         client.dispose()
 
       const onDidClientReconnect = new Emitter<void>()
-      Server.Clients.set(
+      IPCMainServer.Clients.set(
         id,
         toDisposable(() => onDidClientReconnect.fire()),
       )
@@ -176,6 +176,6 @@ export class Server extends IPCServer {
   }
 
   constructor() {
-    super(Server.getOnDidClientConnect())
+    super(IPCMainServer.getOnDidClientConnect())
   }
 }
