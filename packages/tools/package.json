@@ -35,6 +35,7 @@
     "prepublish": "pnpm run build",
     "build": "node-gyp configure && node-gyp build && unbuild",
     "stub": "unbuild --stub",
+    "publish": "pnpm publish",
     "postpublish": "pnpm run stub"
   },
   "dependencies": {
