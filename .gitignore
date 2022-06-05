@@ -10,3 +10,4 @@ dist
 coverage
 *.cjs
 *.mjs
+packages/tools/dist/index.cjs
