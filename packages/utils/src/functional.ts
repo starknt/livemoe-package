@@ -215,3 +215,15 @@ export function delay(msec: number): Promise<void> {
     }, msec)
   })
 }
+
+export function safeStringify<T>(obj: T): string {
+  const seen = new Set()
+  return JSON.stringify(obj, (key, val) => {
+    if (val != null && typeof val === 'object') {
+      if (seen.has(val))
+        return '[Circular]'
+      seen.add(val)
+    }
+    return val
+  })
+}

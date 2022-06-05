@@ -33,7 +33,8 @@
   "scripts": {
     "prepublish": "pnpm run build",
     "build": "unbuild",
-    "stub": "unbuild --stub"
+    "stub": "unbuild --stub",
+    "postpublish": "pnpm run stub"
   },
   "dependencies": {
     "@livemoe/utils": "workspace:*"

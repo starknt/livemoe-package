@@ -1,11 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-tabs */
 /* eslint-disable no-mixed-spaces-and-tabs */
-/* ---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *-------------------------------------------------------------------------------------------- */
-
 import { IdleValue, illegalState } from '@livemoe/utils'
 import { SyncDescriptor } from './descriptors'
 import type { ServiceIdentifier, ServicesAccessor } from './instantiation'
@@ -24,8 +19,6 @@ class CyclicDependencyError extends Error {
 }
 
 export class InstantiationService implements IInstantiationService {
-  declare readonly _serviceBrand: undefined
-
   private readonly _services: ServiceCollection
   private readonly _strict: boolean
   private readonly _parent?: InstantiationService
@@ -37,6 +30,8 @@ export class InstantiationService implements IInstantiationService {
 
     this._services.set(IInstantiationService, this)
   }
+
+  _serviceBrand: undefined
 
   createChild(services: ServiceCollection): IInstantiationService {
     return new InstantiationService(services, this._strict, this)

@@ -14,7 +14,7 @@ export interface ICommonProtocol {
   removeListener(event: string | symbol, listener: (...args: unknown[]) => void): void
 }
 
-export class IPCServer<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
+export class IPCRenderClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
   private readonly channelClient: ChannelClient
 
   private readonly channelServer: ChannelServer<TContext>
@@ -42,7 +42,7 @@ export class IPCServer<TContext = string> implements IChannelClient, IChannelSer
   }
 }
 
-export class IPCRenderServer extends IPCServer implements IDisposable {
+export class IPCRenderServer extends IPCRenderClient implements IDisposable {
   static commonProtocol?: ICommonProtocol
 
   private readonly protocol: Protocol

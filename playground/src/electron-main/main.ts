@@ -1,12 +1,12 @@
 import path from 'path'
 import assert from 'assert'
 import type { IPCService } from '@livemoe/ipc'
-import { InjectedServer, InjectedService } from '@livemoe/ipc/main'
-import { BrowserWindow, app } from 'electron'
+import { InjectedServer, InjectedService, MessageMainPortServer, connect } from '@livemoe/ipc/main'
+import { BrowserWindow, MessageChannelMain, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
-import { Injectable, Module, createDecorator, optional } from '@livemoe/core'
-import type { IPCMainServer } from '@livemoe/ipc/src/main'
-import { InitalizedServer } from '@livemoe/ipc/src/main'
+import { Injectable, Module, createDecorator } from '@livemoe/core'
+import type { IPCMainServer } from '@livemoe/ipc/main'
+import { IdleValue } from '@livemoe/utils'
 
 export interface ITestService {
   hello: string
@@ -14,7 +14,7 @@ export interface ITestService {
 
 const ITestService = createDecorator<ITestService>('ITestService')
 
-@Module()
+@Module('testParams')
 class Main {
   @InjectedServer()
   private readonly server!: IPCMainServer
@@ -22,52 +22,37 @@ class Main {
   @InjectedService('test')
   private readonly tService!: IPCService
 
-  constructor(@ITestService private readonly testService: ITestService) {
+  constructor(staticParam: string, @ITestService private readonly testService: ITestService) {
     assert.ok(testService)
     assert.equal(testService.hello, 'hello')
     console.log('创建Main...')
-    console.log(this.testService, this)
-    console.log('tService', this.tService)
+    assert.ok(this.tService)
+    assert.ok(staticParam)
 
     this.tService.registerCaller('test', async (msg) => {
+      console.log('[tService]', msg)
       return msg
     })
 
-    console.log('server: ', this.server)
+    new IdleValue(async () => {
+      const port = await connect(BrowserWindow.getAllWindows()[0])
+
+      const messagePortServer = new MessageMainPortServer(port, 'main')
+
+      const channel = messagePortServer.getChannel('test')
+      channel.call('s')
+      messagePortServer.registerChannel('test', this.tService)
+    })
   }
 }
-// @Module()
-// class Test1 {
-//   constructor(@ITestService private readonly testService: ITestService) {
-//     assert.ok(testService)
-//     assert.equal(testService.hello, 'hello')
-//     console.log('创建Main...')
-//     console.log(this.testService, this)
-//   }
-// }
 
-// @Module()
-// class Test2 {
-//   constructor(@ITestService private readonly testService: ITestService) {
-//     assert.ok(testService)
-//     assert.equal(testService.hello, 'hello')
-//     console.log('创建Main...')
-//     console.log(this.testService, this)
-//   }
-// }
-// @Module()
-// class Test3 {
-//   constructor(@ITestService private readonly testService: ITestService) {
-//     assert.ok(testService)
-//     assert.equal(testService.hello, 'hello')
-//     console.log('创建Main...')
-//     console.log(this.testService, this)
-//   }
-// }
-
-@Injectable(ITestService)
+@Injectable(ITestService, 'testParams')
 class TestService implements ITestService {
   hello = 'hello'
+  constructor(staticParams: string) {
+    assert.ok(staticParams)
+    console.log('testParams', staticParams)
+  }
 }
 
 console.log(GetSysListViewPosition())
