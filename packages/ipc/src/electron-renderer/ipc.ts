@@ -1,8 +1,8 @@
 import type { IDisposable } from '@livemoe/utils'
-import { BufferWriter, Event, VSBuffer, serialize } from '@livemoe/utils'
+import { Event, VSBuffer } from '@livemoe/utils'
 import { ipcRenderer } from 'electron'
-import type { IChannel, IChannelClient, IChannelServer, IMessagePassingProtocol, IServerChannel } from '../electron-common/ipc'
-import { ChannelClient, ChannelServer } from '../electron-common/ipc'
+import { IPCClient } from '../electron-common/ipc'
+
 import { Protocol } from '../electron-common/ipc.electron'
 
 // @ts-expect-error ok
@@ -14,35 +14,7 @@ export interface ICommonProtocol {
   removeListener(event: string | symbol, listener: (...args: unknown[]) => void): void
 }
 
-export class IPCRenderClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
-  private readonly channelClient: ChannelClient
-
-  private readonly channelServer: ChannelServer<TContext>
-
-  constructor(protocol: IMessagePassingProtocol, ctx: TContext) {
-    const writer = new BufferWriter()
-    serialize(writer, ctx)
-    protocol.send(writer.buffer)
-
-    this.channelClient = new ChannelClient(protocol)
-    this.channelServer = new ChannelServer(protocol, ctx)
-  }
-
-  getChannel<T extends IChannel>(channelName: string): T {
-    return this.channelClient.getChannel(channelName)
-  }
-
-  registerChannel(channelName: string, channel: IServerChannel<TContext>): void {
-    this.channelServer.registerChannel(channelName, channel)
-  }
-
-  dispose(): void {
-    this.channelClient.dispose()
-    this.channelServer.dispose()
-  }
-}
-
-export class IPCRenderServer extends IPCRenderClient implements IDisposable {
+export class IPCRenderServer extends IPCClient implements IDisposable {
   static commonProtocol?: ICommonProtocol
 
   private readonly protocol: Protocol

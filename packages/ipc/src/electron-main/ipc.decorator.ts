@@ -3,7 +3,7 @@ import type { IService } from '../electron-common/ipc.service'
 import { IPCService } from '../electron-common/ipc.service'
 import { IPCMainServer } from './ipc'
 
-let _server = new IdleValue(() => new IPCMainServer())
+const _server = new IdleValue(() => new IPCMainServer())
 const serviceCollection = new Map<string, IService>()
 
 export function InjectedService(channleName: string, server?: IPCMainServer): any {
@@ -40,10 +40,4 @@ export function InjectedServer() {
   }
 }
 
-export function InitalizedServer(server: IPCMainServer) {
-  serviceCollection.forEach((service, key) => {
-    _server.dispose()
-    server.registerChannel(key, service)
-    _server = new IdleValue(() => server)
-  })
-}
+export const getInsideServer = () => _server.value

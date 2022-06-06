@@ -2,7 +2,7 @@ import path from 'path'
 import assert from 'assert'
 import type { IPCService } from '@livemoe/ipc'
 import { InjectedServer, InjectedService, MessageMainPortServer, connect } from '@livemoe/ipc/main'
-import { BrowserWindow, MessageChannelMain, app } from 'electron'
+import { BrowserWindow, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
 import { Injectable, Module, createDecorator } from '@livemoe/core'
 import type { IPCMainServer } from '@livemoe/ipc/main'
@@ -30,7 +30,6 @@ class Main {
     assert.ok(staticParam)
 
     this.tService.registerCaller('test', async (msg) => {
-      console.log('[tService]', msg)
       return msg
     })
 
@@ -43,6 +42,16 @@ class Main {
       channel.call('s')
       messagePortServer.registerChannel('test', this.tService)
     })
+
+    setTimeout(() => {
+      this.getService()
+    }, 2000)
+  }
+
+  async getService() {
+    const channel = await this.server.getChannel('preload', 'rtest')
+
+    channel.call('rtest', 123).then(console.log).catch(console.error)
   }
 }
 

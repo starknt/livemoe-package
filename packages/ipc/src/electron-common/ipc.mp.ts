@@ -54,7 +54,7 @@ export class Protocol implements IMessagePassingProtocol {
     }
   }
 
-  dispose(): void {
+  disconnect(): void {
     this.port.close()
   }
 }
@@ -73,6 +73,6 @@ export class MessagePortClient extends IPCClient implements IDisposable {
   }
 
   dispose(): void {
-    this.protocol.dispose()
+    this.protocol.disconnect()
   }
 }

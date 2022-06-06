@@ -120,11 +120,6 @@ export interface IServerChannel<TContext = string> {
   listen<T>(ctx: TContext, event: string, arg?: any): Event<T> // 监听消息
 }
 
-// 频道的服务端接口
-export interface IChannelServer<TContext = string> {
-  registerChannel(channelName: string, channel: IServerChannel<TContext>): void
-}
-
 // 频道客户端接口
 export interface IChannel {
   call<T, TT = any>(
@@ -138,9 +133,12 @@ export interface IChannel {
 export interface IChannelClient {
   getChannel<T extends IChannel>(channelName: string): T
 }
+// 频道的服务端接口
+export interface IChannelServer<TContext = string> {
+  registerChannel(channelName: string, channel: IServerChannel<TContext>): void
+}
 
-export class ChannelServer<TContext = string>
-implements IChannelServer<TContext>, IDisposable {
+export class ChannelServer<TContext = string> implements IChannelServer<TContext>, IDisposable {
   // 保存客户端可以访问的频道信息
   private readonly channels = new Map<string, IServerChannel<TContext>>()
 
@@ -394,6 +392,8 @@ implements IChannelServer<TContext>, IDisposable {
           type: ResponseType.PromiseError,
         })
       }
+
+      clearTimeout(timer)
     }, this.timeoutDelay)
 
     pendingRequests.push({ request, timeoutTimer: timer })
@@ -698,8 +698,7 @@ export class IPCClient<TContext = string> implements IChannelClient, IChannelSer
   }
 }
 
-export class IPCServer<TContext = string>
-implements IChannelServer<TContext>, IDisposable {
+export class IPCServer<TContext = string> implements IChannelServer<TContext>, IDisposable {
   // 服务端侧可访问的频道
   private readonly channels = new Map<string, IServerChannel<TContext>>()
 
@@ -782,7 +781,7 @@ implements IChannelServer<TContext>, IDisposable {
     })
   }
 
-  async getChannel(ctx: string, channelName: string): Promise<IChannel> {
+  async getChannel<T extends IChannel>(ctx: string, channelName: string): Promise<T> {
     const result = await retry(
       async () => {
         const connection = this.connections.find(
@@ -801,6 +800,6 @@ implements IChannelServer<TContext>, IDisposable {
     if (!result)
       throw new Error(`Channel ${channelName} not found`)
 
-    return result
+    return result as T
   }
 }

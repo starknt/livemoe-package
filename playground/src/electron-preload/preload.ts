@@ -1,7 +1,8 @@
+import { IPCService } from '@livemoe/ipc'
 import { IPCRenderServer, MessagePortClient } from '@livemoe/ipc/renderer'
 import { Event, retry } from '@livemoe/utils'
 import { contextBridge } from 'electron'
-const client = new IPCRenderServer('')
+const client = new IPCRenderServer('preload')
 
 const messagePortClient = new MessagePortClient()
 
@@ -25,6 +26,14 @@ messagePortClient.onFirstConnection(async () => {
 })
 
 const testChannel = client.getChannel('test')
+
+const testService = new IPCService()
+
+client.registerChannel('rtest', testService)
+
+testService.registerCaller('rtest', async (msg) => {
+  return msg
+})
 
 contextBridge.exposeInMainWorld('ipc', {
   call: async (channel: string, ...args: any[]) => {

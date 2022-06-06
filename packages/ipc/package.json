@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/ipc",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -45,9 +45,7 @@
   "scripts": {
     "prepublish": "pnpm run build",
     "build": "unbuild",
-    "publish": "pnpm publish",
-    "stub": "unbuild --stub",
-    "postpublish": "pnpm run stub"
+    "stub": "unbuild --stub"
   },
   "dependencies": {
     "@livemoe/core": "workspace:*",

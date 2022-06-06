@@ -24,3 +24,4 @@ export class Protocol implements IMessagePassingProtocol {
     this.sender.send('ipc:disconnect', null)
   }
 }
+
