@@ -6,7 +6,6 @@ import { InjectedServer, InjectedService, MessageMainPortServer, connect } from 
 import { BrowserWindow, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
 import { Injectable, Module, createDecorator } from '@livemoe/core'
-
 import { IdleValue } from '@livemoe/utils'
 
 export interface ITestService {
