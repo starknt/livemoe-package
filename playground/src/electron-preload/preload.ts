@@ -1,8 +1,9 @@
-import { IPCService } from '@livemoe/ipc'
+import { IPCLogger, IPCService } from '@livemoe/ipc'
 import { IPCRenderServer, MessagePortClient } from '@livemoe/ipc/renderer'
 import { Event, retry } from '@livemoe/utils'
-import { contextBridge } from 'electron'
-const client = new IPCRenderServer('preload')
+import { contextBridge, ipcRenderer } from 'electron'
+
+const client = new IPCRenderServer('preload', ipcRenderer, new IPCLogger('main', 'preload'))
 
 const messagePortClient = new MessagePortClient()
 

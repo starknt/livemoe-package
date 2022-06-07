@@ -12,6 +12,8 @@ import {
   deserialize,
   retry, serialize, toDisposable,
 } from '@livemoe/utils'
+import type { IIPCLogger } from './ipc.logger'
+import { RequestInitiator } from './ipc.logger'
 
 // 消息传输协议定义
 export interface IMessagePassingProtocol {
@@ -109,6 +111,33 @@ type IRawResponse =
   | IRawEventFireResponse
 type IHandler = (response: IRawResponse) => void
 
+function requestTypeToStr(type: RequestType) {
+  switch (type) {
+    case RequestType.Promise:
+      return 'req'
+    case RequestType.PromiseCancel:
+      return 'cancel'
+    case RequestType.EventListen:
+      return 'subscribe'
+    case RequestType.EventDispose:
+      return 'unsubscribe'
+  }
+}
+
+function responseTypeToStr(type: ResponseType): string {
+  switch (type) {
+    case ResponseType.Initialize:
+      return 'init'
+    case ResponseType.PromiseSuccess:
+      return 'reply:'
+    case ResponseType.PromiseError:
+    case ResponseType.PromiseErrorObj:
+      return 'replyErr:'
+    case ResponseType.EventFire:
+      return 'event:'
+  }
+}
+
 // 服务端频道接口
 export interface IServerChannel<TContext = string> {
   call<T>(
@@ -138,6 +167,12 @@ export interface IChannelServer<TContext = string> {
   registerChannel(channelName: string, channel: IServerChannel<TContext>): void
 }
 
+export interface PendingChannel<TContext = string> {
+  ctx: TContext
+  channel: (value: IChannel) => void
+  timeout: number | NodeJS.Timeout
+}
+
 export class ChannelServer<TContext = string> implements IChannelServer<TContext>, IDisposable {
   // 保存客户端可以访问的频道信息
   private readonly channels = new Map<string, IServerChannel<TContext>>()
@@ -156,6 +191,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
   constructor(
     private readonly protocol: IMessagePassingProtocol, // 消息协议
     private readonly ctx: TContext, // 服务名
+    private readonly ipcLogger: IIPCLogger | null = null,
     private readonly timeoutDelay: number = 1000, // 通信超时时间
   ) {
     this.protocolListener = this.protocol.onMessage(msg =>
@@ -174,6 +210,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
     // 返回执行结果
     switch (type) {
       case RequestType.Promise:
+        this.ipcLogger?.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, body)
         return this.onPromise({
           type,
           id: header[1],
@@ -182,6 +219,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
           arg: body,
         })
       case RequestType.EventListen:
+        this.ipcLogger?.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, body)
         return this.onEventListen({
           type,
           id: header[1],
@@ -190,8 +228,10 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
           arg: body,
         })
       case RequestType.PromiseCancel:
+        this.ipcLogger?.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`)
         return this.disposeActiveRequest({ type, id: header[1] })
       case RequestType.EventDispose:
+        this.ipcLogger?.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`)
         return this.disposeActiveRequest({ type, id: header[1] })
       default:
         break
@@ -207,19 +247,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
     }
   }
 
-  public dispose(): void {
-    if (this.protocolListener) {
-      this.protocolListener.dispose()
-      this.protocolListener = null
-    }
-    this.activeRequests.forEach(d => d.dispose())
-    this.activeRequests.clear()
-  }
-
-  registerChannel(
-    channelName: string,
-    channel: IServerChannel<TContext>,
-  ): void {
+  public registerChannel(channelName: string, channel: IServerChannel<TContext>): void {
     this.channels.set(channelName, channel)
     // 如果频道还未注册好之前就来了很多请求，则在此时进行请求执行。
     setTimeout(() => this.flushPendingRequests(channelName), 0)
@@ -251,31 +279,41 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
   private sendResponse(response: IRawResponse): void {
     switch (response.type) {
       case ResponseType.Initialize:
-        return this.send([response.type])
+      {
+        const msgLength = this.send([response.type])
+        this.ipcLogger?.logOutgoing(msgLength, 0, RequestInitiator.OtherSide, `${responseTypeToStr(response.type)}`)
 
+        return
+      }
       case ResponseType.PromiseSuccess:
       case ResponseType.PromiseError:
       case ResponseType.PromiseErrorObj:
       case ResponseType.EventFire:
-        return this.send([response.type, response.id], response.data)
+        {
+          const msgLength = this.send([response.type, response.id], response.data)
+          this.ipcLogger?.logOutgoing(msgLength, response.id, RequestInitiator.OtherSide, `${responseTypeToStr(response.type)}`, response.data)
+        }
+        break
       default:
         break
     }
   }
 
-  private send(header: any, body: any = undefined): void {
+  private send(header: any, body: any = undefined): number {
     const writer = new BufferWriter()
     serialize(writer, header)
     serialize(writer, body)
-    this.sendBuffer(writer.buffer)
+    return this.sendBuffer(writer.buffer)
   }
 
-  private sendBuffer(message: VSBuffer): void {
+  private sendBuffer(message: VSBuffer): number {
     try {
       this.protocol.send(message)
+      return message.byteLength
     }
     catch (err) {
       // noop
+      return 0
     }
   }
 
@@ -368,9 +406,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
     this.activeRequests.set(id, disposable)
   }
 
-  private collectPendingRequest(
-    request: IRawPromiseRequest | IRawEventListenRequest,
-  ): void {
+  private collectPendingRequest(request: IRawPromiseRequest | IRawEventListenRequest): void {
     let pendingRequests = this.pendingRequests.get(request.channelName)
 
     if (!pendingRequests) {
@@ -392,11 +428,18 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
           type: ResponseType.PromiseError,
         })
       }
-
-      clearTimeout(timer)
     }, this.timeoutDelay)
 
     pendingRequests.push({ request, timeoutTimer: timer })
+  }
+
+  public dispose(): void {
+    if (this.protocolListener) {
+      this.protocolListener.dispose()
+      this.protocolListener = null
+    }
+    this.activeRequests.forEach(d => d.dispose())
+    this.activeRequests.clear()
   }
 }
 
@@ -418,7 +461,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
 
   readonly onDidInitialize = this._onDidInitialize.event // 当频道被初始化时会触发事件
 
-  constructor(private readonly protocol: IMessagePassingProtocol) {
+  constructor(private readonly protocol: IMessagePassingProtocol, private readonly ipcLogger: IIPCLogger | null = null) {
     this.protocolListener = this.protocol.onMessage(msg =>
       this.onBuffer(msg),
     )
@@ -432,12 +475,14 @@ export class ChannelClient implements IChannelClient, IDisposable {
 
     switch (type) {
       case ResponseType.Initialize:
+        this.ipcLogger?.logIncoming(message.byteLength, 0, RequestInitiator.LocalSide, responseTypeToStr(type))
         return this.onResponse({ type: header[0] })
 
       case ResponseType.PromiseSuccess:
       case ResponseType.PromiseError:
       case ResponseType.EventFire:
       case ResponseType.PromiseErrorObj:
+        this.ipcLogger?.logIncoming(message.byteLength, header[1], RequestInitiator.LocalSide, responseTypeToStr(type), body)
         return this.onResponse({ type: header[0], id: header[1], data: body })
     }
   }
@@ -455,20 +500,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
       handler(response)
   }
 
-  dispose(): void {
-    if (this.protocolListener) {
-      // 移除消息监听
-      this.protocolListener.dispose()
-      this.protocolListener = null
-    }
-
-    // 如果有请求仍然在执行中，清理所有请求，释放主进程资源
-    this.activeRequests.forEach(p => p.dispose())
-    this.activeRequests.clear()
-    this.isDisposed = true
-  }
-
-  getChannel<T extends IChannel>(channelName: string): T {
+  public getChannel<T extends IChannel>(channelName: string): T {
     return {
       call: (command: string, arg?: any, cancellationToken?: CancellationToken) => {
         if (this.isDisposed)
@@ -490,12 +522,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
     } as T
   }
 
-  private requestEvent(
-    channelName: string,
-    eventName: string,
-    arg: any,
-    cancellationToken = CancellationToken.None,
-  ): Event<any> {
+  private requestEvent(channelName: string, eventName: string, arg: any): Event<any> {
     const id = this.lastRequestId++
     const type = RequestType.EventListen
     const request: IRawRequest = {
@@ -538,12 +565,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
     return emitter.event
   }
 
-  private requestPromise(
-    channelName: string,
-    name: string,
-    arg?: any,
-    cancellationToken = CancellationToken.None,
-  ): Promise<any> {
+  private requestPromise(channelName: string, name: string, arg?: any, cancellationToken = CancellationToken.None): Promise<any> {
     const id = this.lastRequestId++
     const type = RequestType.Promise
     const request: IRawRequest = { id, type, channelName, name, arg }
@@ -632,32 +654,38 @@ export class ChannelClient implements IChannelClient, IDisposable {
     switch (request.type) {
       case RequestType.Promise:
       case RequestType.EventListen:
-        return this.send(
-          [request.type, request.id, request.channelName, request.name],
-          request.arg,
-        )
-
+      {
+        const msgLength = this.send([request.type, request.id, request.channelName, request.name], request.arg)
+        this.ipcLogger?.logOutgoing(msgLength, request.id, RequestInitiator.LocalSide, `${requestTypeToStr(request.type)}: ${request.channelName}.${request.name}`, request.arg)
+        return
+      }
       case RequestType.EventDispose:
       case RequestType.PromiseCancel:
-        return this.send([request.type, request.id])
+        {
+          const msgLength = this.send([request.type, request.id])
+          this.ipcLogger?.logOutgoing(msgLength, request.id, RequestInitiator.LocalSide, `${requestTypeToStr(request.type)}`)
+        }
+        break
       default:
         break
     }
   }
 
-  private send(header: any, body: any = undefined): void {
+  private send(header: any, body: any = undefined): number {
     const writer = new BufferWriter()
     serialize(writer, header)
     serialize(writer, body)
-    this.sendBuffer(writer.buffer)
+    return this.sendBuffer(writer.buffer)
   }
 
-  private sendBuffer(message: VSBuffer): void {
+  private sendBuffer(message: VSBuffer): number {
     try {
       this.protocol.send(message)
+      return message.byteLength
     }
     catch (err) {
       // noop
+      return 0
     }
   }
 
@@ -668,6 +696,19 @@ export class ChannelClient implements IChannelClient, IDisposable {
     else
       return Event.toPromise(this.onDidInitialize)
   }
+
+  public dispose(): void {
+    if (this.protocolListener) {
+      // 移除消息监听
+      this.protocolListener.dispose()
+      this.protocolListener = null
+    }
+
+    // 如果有请求仍然在执行中，清理所有请求，释放主进程资源
+    this.activeRequests.forEach(p => p.dispose())
+    this.activeRequests.clear()
+    this.isDisposed = true
+  }
 }
 
 export class IPCClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
@@ -675,24 +716,24 @@ export class IPCClient<TContext = string> implements IChannelClient, IChannelSer
 
   private channelServer: ChannelServer<TContext>
 
-  constructor(protocol: IMessagePassingProtocol, ctx: TContext) {
+  constructor(protocol: IMessagePassingProtocol, ctx: TContext, ipcLogger: IIPCLogger | null = null) {
     const writer = new BufferWriter()
     serialize(writer, ctx)
     protocol.send(writer.buffer)
 
-    this.channelClient = new ChannelClient(protocol)
-    this.channelServer = new ChannelServer(protocol, ctx)
+    this.channelClient = new ChannelClient(protocol, ipcLogger)
+    this.channelServer = new ChannelServer(protocol, ctx, ipcLogger)
   }
 
-  registerChannel(channelName: string, channel: IServerChannel<TContext>): void {
+  public registerChannel(channelName: string, channel: IServerChannel<TContext>): void {
     return this.channelServer.registerChannel(channelName, channel)
   }
 
-  getChannel<T extends IChannel>(channelName: string): T {
+  public getChannel<T extends IChannel>(channelName: string): T {
     return this.channelClient.getChannel(channelName)
   }
 
-  dispose(): void {
+  public dispose(): void {
     this.channelClient.dispose()
     this.channelServer.dispose()
   }
@@ -705,56 +746,33 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
   // 客户端和服务端的连接
   private readonly _connections = new Set<Connection<TContext>>()
 
-  private readonly _onDidChangeConnections = new Emitter<
-    Connection<TContext>
-  >()
+  private readonly _onDidChangeConnections = new Emitter<Connection<TContext>>()
 
   private readonly _onRemoveConnection = new Emitter<Connection<TContext>>()
   private readonly _onFirstConnection = new Emitter<void>()
 
-  // 连接改变的时候触发得事件监听
-  readonly onDidChangeConnections: Event<Connection<TContext>>
-    = this._onDidChangeConnections.event
+  // 保存获取频道的请求, 因为获取频道时, 频道还没有注册
+  // 如果 timeoutDelay 过时后, 则会返回 null
+  // 如果频道注册完成，则会从此队列里拿出并执行
+  private readonly pendingChannels = new Map<string, PendingChannel<TContext>[]>()
 
-  readonly onRemoveConnection: Event<Connection<TContext>>
-    = this._onRemoveConnection.event
+  // 连接改变的时候触发得事件监听
+  readonly onDidChangeConnections: Event<Connection<TContext>> = this._onDidChangeConnections.event
+
+  readonly onRemoveConnection: Event<Connection<TContext>> = this._onRemoveConnection.event
 
   readonly onFirstConnection: Event<void> = this._onFirstConnection.event
 
-  // 所有连接
-  get connections(): Array<Connection<TContext>> {
-    const result: Array<Connection<TContext>> = []
-    this._connections.forEach(ctx => result.push(ctx))
-    return result
-  }
+  readonly timeoutDelay = 10 * 1000 // 10 秒
 
-  dispose(): void {
-    this.channels.clear()
-    this._connections.clear()
-    this._onRemoveConnection.dispose()
-    this._onDidChangeConnections.dispose()
-  }
-
-  registerChannel(
-    channelName: string,
-    channel: IServerChannel<TContext>,
-  ): void {
-    this.channels.set(channelName, channel)
-
-    // 同时在所有的连接中，需要注册频道
-    this._connections.forEach((connection) => {
-      connection.channelServer.registerChannel(channelName, channel)
-    })
-  }
-
-  constructor(onDidClientConnect: Event<ClientConnectionEvent>) {
+  constructor(onDidClientConnect: Event<ClientConnectionEvent>, ipcLogger: IIPCLogger | null = null) {
     onDidClientConnect(({ protocol, onDidClientDisconnect }) => {
       const onFirstMessage = Event.once(protocol.onMessage)
       onFirstMessage((msg) => {
         const reader = new BufferReader(msg)
         const ctx = deserialize(reader) as TContext
-        const channelServer = new ChannelServer(protocol, ctx)
-        const channelClient = new ChannelClient(protocol)
+        const channelServer = new ChannelServer(protocol, ctx, ipcLogger)
+        const channelClient = new ChannelClient(protocol, ipcLogger)
 
         this.channels.forEach((channel, name) =>
           channelServer.registerChannel(name, channel),
@@ -779,27 +797,82 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
         })
       })
     })
+
+    this.onDidChangeConnections(e => setTimeout(() => this.flushPendingChannel(e)))
   }
 
-  async getChannel<T extends IChannel>(ctx: string, channelName: string): Promise<T> {
-    const result = await retry(
-      async () => {
-        const connection = this.connections.find(
-          connection => <string>(<unknown>connection.ctx) === ctx,
-        )
+  // 所有连接
+  get connections(): Array<Connection<TContext>> {
+    const result: Array<Connection<TContext>> = []
+    this._connections.forEach(ctx => result.push(ctx))
+    return result
+  }
 
-        if (connection)
-          return connection.channelClient.getChannel(channelName)
+  public registerChannel(
+    channelName: string,
+    channel: IServerChannel<TContext>,
+  ): void {
+    this.channels.set(channelName, channel)
 
-        return undefined
-      },
-      10,
-      500,
-    )
+    // 同时在所有的连接中，需要注册频道
+    this._connections.forEach((connection) => {
+      connection.channelServer.registerChannel(channelName, channel)
+    })
+  }
 
-    if (!result)
-      throw new Error(`Channel ${channelName} not found`)
+  public flushPendingChannel(connection: Connection<TContext>) {
+    for (const [channleName, channels] of this.pendingChannels) {
+      channels.forEach((pendingChannel) => {
+        const { timeout, channel, ctx } = pendingChannel
+        try {
+          const _channel = connection.channelClient.getChannel(channleName)
+          if (ctx === connection.ctx && _channel) {
+            clearTimeout(timeout as NodeJS.Timeout)
 
-    return result as T
+            channel(_channel)
+          }
+        }
+        catch (error) {
+          // noop
+        }
+      })
+    }
+  }
+
+  public getChannel(ctx: TContext, channelName: string): Promise<IChannel> {
+    return new Promise((resolve, reject) => {
+      const connection = this.connections.find(
+        connection => connection.ctx === ctx,
+      )
+
+      const timer = setTimeout(() => {
+        reject(new Error(`unknown channel: ${ctx}:${channelName}`))
+      }, this.timeoutDelay)
+
+      if (connection) { resolve(connection.channelClient.getChannel(channelName)) }
+      else if (this.pendingChannels.has(channelName)) {
+        const channels = this.pendingChannels.get(channelName)!
+        channels.push({
+          timeout: timer,
+          channel: resolve,
+          ctx,
+        })
+        this.pendingChannels.set(channelName, channels)
+      }
+      else {
+        this.pendingChannels.set(channelName, [{
+          timeout: timer,
+          channel: resolve,
+          ctx,
+        }])
+      }
+    })
+  }
+
+  public dispose(): void {
+    this.channels.clear()
+    this._connections.clear()
+    this._onRemoveConnection.dispose()
+    this._onDidChangeConnections.dispose()
   }
 }

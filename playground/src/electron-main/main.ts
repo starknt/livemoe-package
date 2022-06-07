@@ -1,11 +1,12 @@
 import path from 'path'
 import assert from 'assert'
 import type { IPCService } from '@livemoe/ipc'
+import type { IPCMainServer } from '@livemoe/ipc/main'
 import { InjectedServer, InjectedService, MessageMainPortServer, connect } from '@livemoe/ipc/main'
 import { BrowserWindow, app } from 'electron'
 import { GetSysListViewPosition } from '@livemoe/tool'
 import { Injectable, Module, createDecorator } from '@livemoe/core'
-import type { IPCMainServer } from '@livemoe/ipc/main'
+
 import { IdleValue } from '@livemoe/utils'
 
 export interface ITestService {
@@ -16,7 +17,7 @@ const ITestService = createDecorator<ITestService>('ITestService')
 
 @Module('testParams')
 class Main {
-  @InjectedServer()
+  @InjectedServer({ log: true, outgoingPrefix: 'out-main', incomingPrefix: 'in -main' })
   private readonly server!: IPCMainServer
 
   @InjectedService('test')

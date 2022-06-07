@@ -1,5 +1,5 @@
-if (typeof process === 'undefined' || typeof module === 'undefined')
-  throw new TypeError('Not running in an Node.js environment!')
+if (!(typeof process === 'object' && typeof process.versions === 'object' && process.versions.electron))
+  throw new TypeError('Cannot run in non-electron environments')
 
 export const isRenderer = () => process.type === 'renderer'
 export const isMain = () => process.type === 'browser'

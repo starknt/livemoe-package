@@ -4,6 +4,7 @@ import type { IDisposable } from '@livemoe/utils'
 import { IPCServer } from '../electron-common/ipc'
 import type { ClientConnectionEvent } from '../electron-common/ipc'
 import { Protocol } from '../electron-common/ipc.electron'
+import type { IIPCLogger } from '../electron-common/ipc.logger'
 
 interface IIPCEvent {
   event: { sender: Electron.WebContents }
@@ -68,7 +69,7 @@ export class IPCMainServer extends IPCServer {
     })
   }
 
-  constructor() {
-    super(IPCMainServer.getOnDidClientConnect())
+  constructor(ipcLogger: IIPCLogger | null = null) {
+    super(IPCMainServer.getOnDidClientConnect(), ipcLogger)
   }
 }

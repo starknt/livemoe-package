@@ -1,9 +1,8 @@
 {
     "extends": "@antfu",
     "rules": {
-        "no-unused-vars": "off",
         "jsonc/indent": "off",
-        "@typescript-eslint/no-unused-vars": "off",
+        "prefer-spread": "off",
         "react/prop-types": [
             "off"
         ],
@@ -11,9 +10,7 @@
         "no-console": "off",
         "no-new": "off",
         "import/export": "off",
-        "eol-last": "off",
-        "@typescript-eslint/no-redeclare": "off",
-        "@typescript-eslint/ban-ts-comment": "off"
+        "eol-last": "off"
     },
     "overrides": [
         {
@@ -26,14 +23,17 @@
         },
         {
             "files": [
-                "**/*.md/*.*"
+                "**/*.md/*.*",
+                "*.ts"
             ],
             "rules": {
                 "no-restricted-imports": "off",
                 "no-restricted-syntax": "off",
                 "no-labels": "off",
                 "@typescript-eslint/no-unused-vars": "off",
-                "@typescript-eslint/no-var-requires": "off"
+                "@typescript-eslint/no-var-requires": "off",
+                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/no-redeclare": "off"
             }
         }
     ]

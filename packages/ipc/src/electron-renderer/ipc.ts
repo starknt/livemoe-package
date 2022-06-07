@@ -2,8 +2,8 @@ import type { IDisposable } from '@livemoe/utils'
 import { Event, VSBuffer } from '@livemoe/utils'
 import { ipcRenderer } from 'electron'
 import { IPCClient } from '../electron-common/ipc'
-
 import { Protocol } from '../electron-common/ipc.electron'
+import type { IIPCLogger } from '../electron-common/ipc.logger'
 
 // @ts-expect-error ok
 window.ipcRenderer = ipcRenderer
@@ -62,9 +62,9 @@ export class IPCRenderServer extends IPCClient implements IDisposable {
    * @param ctx 创建连接上下文
    * @param commonProtocol 用于扩展服务器的通信方式
    */
-  constructor(ctx: string, commonProtocol?: ICommonProtocol) {
+  constructor(ctx: string, commonProtocol?: ICommonProtocol, ipcLogger: IIPCLogger | null = null) {
     const protocol = IPCRenderServer.createProtocol(commonProtocol)
-    super(protocol, ctx)
+    super(protocol, ctx, ipcLogger)
     this.protocol = protocol
   }
 
