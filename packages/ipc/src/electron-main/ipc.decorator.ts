@@ -4,14 +4,9 @@ import type { IService } from '../electron-common/ipc.service'
 import { IPCService } from '../electron-common/ipc.service'
 import { IPCMainServer } from './ipc'
 
-interface PendingService {
-  target: Record<string | number | symbol, any>
-  key: string
-}
-
 let _server: IdleValue<IPCMainServer> | undefined
 const _serviceCollection = new Map<string, IService>()
-let _pendingServices: Map<string, PendingService> | null = new Map()
+let _pendingServices: Map<string, IService> | null = new Map()
 
 export interface IPCMainServerOptions {
   log: boolean
@@ -32,10 +27,9 @@ export function InjectedService(channleName: string, server?: IPCMainServer): an
           server.registerChannel(channleName, service)
         }
         else if (!_server) {
-          _pendingServices?.set(channleName, {
-            target,
-            key,
-          })
+          const service = new IPCService()
+          target[key] = service
+          _pendingServices?.set(channleName, service)
         }
         else if (_server) {
           target[key] = new IPCService()
@@ -68,21 +62,15 @@ export function InjectedServer(options?: IPCMainServerOptions, exector?: () => I
       }
 
       if (_pendingServices) {
-        for (const [channelName, PendingService] of _pendingServices) {
+        for (const [channelName, pendingService] of _pendingServices) {
           if (_serviceCollection.has(channelName)) {
             const service = _serviceCollection.get(channelName)!
-
-            const { target, key } = PendingService
-
-            target[key] = service
 
             _server.value.registerChannel(channelName, service)
           }
           else {
-            const service = new IPCService()
-            target[key] = service
-            _serviceCollection.set(channelName, service)
-            _server.value.registerChannel(channelName, service)
+            _serviceCollection.set(channelName, pendingService)
+            _server.value.registerChannel(channelName, pendingService)
           }
         }
 
