@@ -21,13 +21,18 @@ export function InjectedService(channleName: string, server?: IPCMainServer): an
         target[key] = _serviceCollection.get(channleName)!
       }
       else {
-        if (!server) { _pendingServices?.add(channleName) }
-        else {
+        if (server) {
+          const service = new IPCService()
+          target[key] = service
+          server.registerChannel(channleName, service)
+        }
+        else if (!_server) { _pendingServices?.add(channleName) }
+        else if (_server) {
           target[key] = new IPCService()
 
           _serviceCollection.set(channleName, target[key])
 
-          server.registerChannel(channleName, target[key])
+          _server.value.registerChannel(channleName, target[key])
         }
       }
     }
@@ -62,12 +67,11 @@ export function InjectedServer(options?: IPCMainServerOptions, exector?: () => I
             _serviceCollection.set(channelName, service)
             _server.value.registerChannel(channelName, service)
           }
-
-          _pendingServices.delete(channelName)
         }
+
+        _pendingServices?.clear()
+        _pendingServices = null
       }
-      _pendingServices?.clear()
-      _pendingServices = null
     }
     try {
       target[key] = _server.value
