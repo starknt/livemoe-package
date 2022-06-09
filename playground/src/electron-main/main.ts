@@ -4,7 +4,6 @@ import type { IPCService } from '@livemoe/ipc'
 import type { IPCMainServer } from '@livemoe/ipc/main'
 import { InjectedServer, InjectedService, MessageMainPortServer, connect } from '@livemoe/ipc/main'
 import { BrowserWindow, app } from 'electron'
-import { GetSysListViewPosition } from '@livemoe/tool'
 import { Injectable, Module, createDecorator } from '@livemoe/core'
 import { IdleValue } from '@livemoe/utils'
 
@@ -63,8 +62,6 @@ class TestService implements ITestService {
     console.log('testParams', staticParams)
   }
 }
-
-console.log(GetSysListViewPosition())
 
 let window: BrowserWindow
 

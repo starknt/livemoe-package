@@ -5,7 +5,8 @@ import { IPCService } from '../electron-common/ipc.service'
 import { IPCMainServer } from './ipc'
 
 let _server: IdleValue<IPCMainServer> | undefined
-const serviceCollection = new Map<string, IService>()
+const _serviceCollection = new Map<string, IService>()
+let _pendingServices: Set<string> | null = new Set<string>()
 
 export interface IPCMainServerOptions {
   log: boolean
@@ -16,18 +17,18 @@ export interface IPCMainServerOptions {
 export function InjectedService(channleName: string, server?: IPCMainServer): any {
   return (target: any, key: string) => {
     try {
-      if (serviceCollection.has(channleName)) {
-        target[key] = serviceCollection.get(channleName)!
+      if (_serviceCollection.has(channleName)) {
+        target[key] = _serviceCollection.get(channleName)!
       }
       else {
-        target[key] = new IPCService()
+        if (!server) { _pendingServices?.add(channleName) }
+        else {
+          target[key] = new IPCService()
 
-        serviceCollection.set(channleName, target[key])
+          _serviceCollection.set(channleName, target[key])
 
-        if (!server)
-          _server?.value.registerChannel(channleName, target[key])
-        else
           server.registerChannel(channleName, target[key])
+        }
       }
     }
     catch (error) {
@@ -50,6 +51,23 @@ export function InjectedServer(options?: IPCMainServerOptions, exector?: () => I
       else {
         _server = new IdleValue(() => new IPCMainServer())
       }
+
+      if (_pendingServices) {
+        for (const channelName of _pendingServices) {
+          if (_serviceCollection.has(channelName)) {
+            _server.value.registerChannel(channelName, _serviceCollection.get(channelName)!)
+          }
+          else {
+            const service = new IPCService()
+            _serviceCollection.set(channelName, service)
+            _server.value.registerChannel(channelName, service)
+          }
+
+          _pendingServices.delete(channelName)
+        }
+      }
+      _pendingServices?.clear()
+      _pendingServices = null
     }
     try {
       target[key] = _server.value
