@@ -11,6 +11,7 @@
     "@livemoe/ipc": "workspace:*",
     "@livemoe/utils": "workspace:*",
     "@livemoe/tool": "workspace:*",
-    "@livemoe/core": "workspace:*"
+    "@livemoe/core": "workspace:*",
+    "@livemoe/logger": "workspace:*"
   }
 }

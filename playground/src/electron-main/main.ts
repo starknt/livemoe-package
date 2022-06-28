@@ -6,7 +6,10 @@ import { InjectedServer, InjectedService, MessageMainPortServer, connect } from 
 import { BrowserWindow, app } from 'electron'
 import { Injectable, Module, createDecorator } from '@livemoe/core'
 import { IdleValue } from '@livemoe/utils'
+import { FileLogger, LogLevel } from '@livemoe/logger'
 
+const fileLogger = new FileLogger('electron-main', path.join(process.cwd(), 'log.txt'), LogLevel.Debug)
+setInterval(() => fileLogger.debug('Hello, world!', process.cwd(), process.versions), 1000)
 export interface ITestService {
   hello: string
 }

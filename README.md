@@ -15,7 +15,7 @@ LiveMoe 壁纸播放器工具库
 - [LiveMoe-IPC](https://github.com/SEVEN-1-bit/livemoe-package/tree/main/packages/ipc)
 - [LiveMoe-Native-Tool](https://github.com/SEVEN-1-bit/livemoe-package/tree/main/packages/tools)
 - [LiveMoe-Utils](https://github.com/SEVEN-1-bit/livemoe-package/tree/main/packages/utils)
+- [LiveMoe-Logger](https://github.com/SEVEN-1-bit/livemoe-package/tree/main/packages/logger)
 
 ## License
-
 [MIT](./LICENSE) License &copy; 2022 [SEVEN-1-bit](https://github.com/SEVEN-1-bit)

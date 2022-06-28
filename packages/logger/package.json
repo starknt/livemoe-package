@@ -1,0 +1,46 @@
+{
+  "name": "@livemoe/logger",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "author": "Seven",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
+    "directory": "packages/logger"
+  },
+  "keywords": [
+    "logger",
+    "log",
+    "electron",
+    "livemoe"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "module": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "pnpm run build",
+    "build": "node-gyp configure && node-gyp build && unbuild",
+    "stub": "unbuild --stub",
+    "publish": "pnpm publish",
+    "postpublish": "pnpm run stub"
+  },
+  "dependencies": {
+    "@livemoe/utils": "workspace:*"
+  },
+  "devDependencies": {
+  }
+}

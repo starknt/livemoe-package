@@ -27,6 +27,9 @@
       ],
       "@livemoe/utils": [
         "./packages/utils/src/index.ts"
+      ],
+      "@livemoe/logger": [
+        "./packages/logger/src/index.ts"
       ]
     }
   },

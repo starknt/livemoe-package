@@ -4,7 +4,7 @@
   "version": "0.0.10",
   "private": true,
   "description": "",
-  "keywords": [],
+  "keywords": ["electron"],
   "license": "MIT",
   "author": "Seven",
   "scripts": {
