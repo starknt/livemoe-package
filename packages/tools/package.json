@@ -1,6 +1,6 @@
 {
   "name": "@livemoe/tool",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "",
   "license": "MIT",
   "author": "Seven",
@@ -40,11 +40,11 @@
     "publish": "pnpm publish"
   },
   "dependencies": {
-    "bindings": "^1.5.0",
-    "node-addon-api": "^5.0.0"
+    "bindings": "^1.5.0"
   },
   "devDependencies": {
     "@types/bindings": "^1.5.1",
-    "node-gyp": "^9.0.0"
+    "node-gyp": "^9.0.0",
+    "node-addon-api": "^5.0.0"
   }
 }
