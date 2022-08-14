@@ -1,9 +1,5 @@
+import fs from 'fs'
 import Bindings from 'bindings'
-
-export interface POINT {
-  x: number
-  y: number
-}
 
 export interface RECT {
   left: number
@@ -48,7 +44,6 @@ export interface CursorStyleSheet {
 }
 
 export interface Tools {
-  GetSysListViewPosition: () => Array<POINT>
   GetSysTaskbarState: () => TaskbarState
   GetSysListViewIconRect: () => Array<RECT>
   SetWindowInWorkerW: (hWnd: number) => boolean
@@ -67,9 +62,20 @@ export interface Tools {
   IsInDesktop: () => boolean
 }
 
-const Addon: Tools = Bindings('tools')
+let Addon: Tools
+try {
+  Addon = Bindings('tools')
+}
+catch (error) {
+  try {
+    Addon = Bindings('tool')
+  }
+  catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
 
-export const GetSysListViewPosition = Addon.GetSysListViewPosition
 export const GetSysTaskbarState = Addon.GetSysTaskbarState
 export const GetSysListViewIconRect = Addon.GetSysListViewIconRect
 export const SetWindowInWorkerW = Addon.SetWindowInWorkerW
