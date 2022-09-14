@@ -5,7 +5,8 @@
     ".prettierrc": "jsonc",
     ".eslintignore": "ignore",
     "*.jsx": "javascriptreact",
-    "*.tsx": "typescriptreact"
+    "*.tsx": "typescriptreact",
+    "xlocale": "cpp"
   },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
