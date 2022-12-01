@@ -1,58 +1,58 @@
 {
-  "name": "@livemoe/ipc",
-  "version": "0.0.19",
+  "author": "starknt",
+  "dependencies": {
+    "@livemoe/core": "workspace:*",
+    "@livemoe/utils": "workspace:*"
+  },
   "description": "",
-  "license": "MIT",
-  "author": "Seven",
-  "publishConfig": {
-    "access": "public"
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./main": {
+      "import": "./dist/main.mjs",
+      "require": "./dist/main.cjs",
+      "types": "./dist/main.d.ts"
+    },
+    "./renderer": {
+      "import": "./dist/renderer.mjs",
+      "require": "./dist/renderer.cjs",
+      "types": "./dist/renderer.d.ts"
+    }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
-    "directory": "packages/ipc"
-  },
+  "files": [
+    "dist",
+    "*.d.ts"
+  ],
   "keywords": [
     "electron",
     "ipc",
     "event",
     "livemoe"
   ],
-  "files": [
-    "dist",
-    "*.d.ts"
-  ],
+  "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./main": {
-      "require": "./dist/main.cjs",
-      "import": "./dist/main.mjs",
-      "types": "./dist/main.d.ts"
-    },
-    "./renderer": {
-      "require": "./dist/renderer.cjs",
-      "import": "./dist/renderer.mjs",
-      "types": "./dist/renderer.d.ts"
-    }
-  },
-  "scripts": {
-    "prepublish": "pnpm run build",
-    "build": "unbuild",
-    "stub": "unbuild --stub",
-    "postpublish": "pnpm run stub"
-  },
-  "dependencies": {
-    "@livemoe/core": "workspace:*",
-    "@livemoe/utils": "workspace:*"
-  },
+  "name": "@livemoe/ipc",
   "peerDependencies": {
     "electron": "^13.0.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/ipc",
+    "type": "git",
+    "url": "git+https://github.com/starknt/livemoe-package.git"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "postpublish": "pnpm run stub",
+    "prepublish": "pnpm run build",
+    "stub": "unbuild --stub"
+  },
+  "types": "./dist/index.d.ts",
+  "version": "0.0.19"
 }

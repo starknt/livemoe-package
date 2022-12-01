@@ -1,17 +1,16 @@
 {
-  "name": "playground",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "pnpm run build && electron dist/main.cjs",
-    "build": "unbuild"
-  },
   "dependencies": {
-    "@livemoe/ipc": "workspace:*",
-    "@livemoe/utils": "workspace:*",
-    "@livemoe/tool": "workspace:*",
     "@livemoe/core": "workspace:*",
-    "@livemoe/logger": "workspace:*"
-  }
+    "@livemoe/ipc": "workspace:*",
+    "@livemoe/logger": "workspace:*",
+    "@livemoe/utils": "workspace:*"
+  },
+  "name": "playground",
+  "private": true,
+  "scripts": {
+    "build": "unbuild",
+    "dev": "pnpm run build && electron dist/main.cjs"
+  },
+  "type": "module",
+  "version": "0.0.0"
 }

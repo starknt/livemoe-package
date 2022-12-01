@@ -1,46 +1,37 @@
 {
-  "name": "@livemoe/logger",
-  "version": "0.0.1",
+  "author": "starknt",
+  "dependencies": {
+    "@livemoe/utils": "workspace:*"
+  },
   "description": "",
-  "license": "MIT",
-  "author": "Seven",
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
-    "directory": "packages/logger"
-  },
+  "devDependencies": {},
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "logger",
     "log",
     "electron",
     "livemoe"
   ],
+  "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "module": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
+  "name": "@livemoe/logger",
+  "publishConfig": {
+    "access": "public"
   },
-  "files": [
-    "dist"
-  ],
+  "repository": {
+    "directory": "packages/logger",
+    "type": "git",
+    "url": "git+https://github.com/starknt/livemoe-package.git"
+  },
   "scripts": {
+    "postpublish": "pnpm run stub",
     "prepublish": "pnpm run build",
-    "build": "node-gyp configure && node-gyp build && unbuild",
-    "stub": "unbuild --stub",
     "publish": "pnpm publish",
-    "postpublish": "pnpm run stub"
+    "stub": "unbuild --stub"
   },
-  "dependencies": {
-    "@livemoe/utils": "workspace:*"
-  },
-  "devDependencies": {
-  }
+  "types": "./dist/index.d.ts",
+  "version": "0.0.1"
 }

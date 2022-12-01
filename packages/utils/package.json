@@ -1,35 +1,28 @@
 {
-  "name": "@livemoe/utils",
-  "version": "0.0.10",
+  "author": "starknt",
   "description": "",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
-  "author": "Seven",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "name": "@livemoe/utils",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
+    "directory": "packages/utils",
     "type": "git",
-    "url": "git+https://github.com/SEVEN-1-bit/livemoe-package.git",
-    "directory": "packages/utils"
+    "url": "git+https://github.com/starknt/livemoe-package.git"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "module": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "prepublish": "pnpm run build",
     "build": "unbuild",
+    "postpublish": "pnpm run stub",
+    "prepublish": "pnpm run build",
     "publish": "pnpm publish",
-    "stub": "unbuild --stub",
-    "postpublish": "pnpm run stub"
-  }
+    "stub": "unbuild --stub"
+  },
+  "types": "./dist/index.d.ts",
+  "version": "0.0.10"
 }
