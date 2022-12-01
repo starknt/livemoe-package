@@ -8,7 +8,7 @@
     "electron"
   ],
   "license": "MIT",
-  "author": "Seven",
+  "author": "starknt",
   "scripts": {
     "play": "npm -C playground run dev",
     "build": "rimraf packages/*/dist packages/*/build && pnpm -r --parallel build",
