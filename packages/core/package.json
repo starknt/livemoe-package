@@ -27,7 +27,6 @@
     "build": "unbuild",
     "postpublish": "pnpm run stub",
     "prepublish": "pnpm run build",
-    "publish": "pnpm publish",
     "stub": "unbuild --stub"
   },
   "types": "dist/index.d.ts",
