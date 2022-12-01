@@ -27,6 +27,7 @@
     "url": "git+https://github.com/starknt/livemoe-package.git"
   },
   "scripts": {
+    "build": "unbuild",
     "postpublish": "pnpm run stub",
     "prepublish": "pnpm run build",
     "publish": "pnpm publish",
